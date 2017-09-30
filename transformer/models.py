@@ -158,15 +158,9 @@ class Transformer(nn.Module):
 
         return (p for p in self.parameters() if id(p) not in freezed_param_ids)
 
-    def forward(self, src, tgt):
-        src_seq, src_pos = src
-        tgt_seq, tgt_pos = tgt
-
-        tgt_seq = tgt_seq[:, :-1]
-        tgt_pos = tgt_pos[:, :-1]
-
-        enc_outputs, _ = self.encoder(src_seq, src_pos)
-        dec_outputs, _, _ = self.decoder(tgt_seq, tgt_pos, src_seq, enc_outputs)
+    def forward(self, src, tgt_in, tgt_out, src_pos, tgt_pos):
+        enc_outputs, _ = self.encoder(src, src_pos)
+        dec_outputs, _, _ = self.decoder(tgt_in, tgt_pos, src, enc_outputs)
 
         logit = self.proj(dec_outputs[-1])
 
